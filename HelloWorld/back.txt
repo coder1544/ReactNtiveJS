@@ -1,0 +1,23 @@
+// <Image source={{require('./img/icon_notification.png'})} style={styles.imageShow} />
+
+
+<TouchableWithoutFeedback
+  onPress={() => this.imageAlert()}>
+  <Image
+      source={{uri: movie.posters.thumbnail}}
+      style={styles.imageShow}
+  />
+</TouchableWithoutFeedback>
+
+
+<TouchableHighlight
+  style={styles.touchable}
+  onLongPress={this.alertImage.bind(this, movie.title)}
+  onPressIn={this.alertImage.bind(this, "in")}
+  onPressOut={this.alertImage.bind(this, "out")}
+  onPress={this.alertImage.bind(this, movie.posters.thumbnail)}>
+  <Image
+    source={{uri: movie.posters.thumbnail}}
+    style={styles.imageShow} >
+  </Image>
+</TouchableHighlight>
