@@ -19,14 +19,16 @@ const propTypes = {
     	PropTypes.number,
     ]),
     errorSource: PropTypes.number,
+    placeSource: PropTypes.number,
     onLoad: PropTypes.func,
     onLoadEnd: PropTypes.func,
     style: View.propTypes.style,
 };
 
+// 是否加载的标志
 var isLoaded = false;
 
-class LoadingImage extends React.Component {
+class ErrorImage extends React.Component {
 
     constructor(props) {
       super(props);
@@ -38,14 +40,7 @@ class LoadingImage extends React.Component {
     }
 
     render(){
-        //判断是加载网络图片还是本地图片
-        if(this.state.finishError){
-          // 加载失败
-            return this.renderError();
-        }else{
-          // 加载成功
-            return this.renderUrl();
-        }
+        return this.renderUrl();
     }
 
     renderUrl(){
@@ -55,21 +50,16 @@ class LoadingImage extends React.Component {
                onLoadEnd = {this.onLoadFinish}
                resizeMode = "contain"
                style = {this.props.style}
-               source = {this.props.source} />
+               source = {this.state.finishError ? this.props.errorSource : this.props.source} >
+         </Image>
        );
-    }
-
-    renderError() {
-        return (
-            <Image
-                resizeMode="contain"
-                style={this.props.style}
-                source={this.props.errorSource} />
-        );
     }
 
     // 加载成功
     onLoadSuccess() {
+      if (this.isLoaded) {
+        return;
+      }
       //改标记值
       this.isLoaded = true;
       this.props.onLoad;
@@ -77,8 +67,13 @@ class LoadingImage extends React.Component {
 
     // 加载结束
     onLoadFinish() {
+      if (this.state.finishError) {
+        return;
+      }
       // 如果加载不成功则重新绘制view
       if (!this.isLoaded) {
+        // 设置加载结束
+        this.isLoaded = true;
         this.setState({finishError : true});
       }
       this.props.onLoadEnd;
@@ -86,10 +81,10 @@ class LoadingImage extends React.Component {
 
 }
 
-LoadingImage.propTypes = propTypes;
+ErrorImage.propTypes = propTypes;
 
-LoadingImage.defaultProps = {
+ErrorImage.defaultProps = {
 	disabled: false
 };
 
-export default LoadingImage;
+export default ErrorImage;
